@@ -1,4 +1,4 @@
-const Router=require('express')
+const Router = require('express')
 
 const { registerUser,
     login,
@@ -9,36 +9,34 @@ const { registerUser,
     refreshAccessToken,
     forgotPassword,
     resetForgotPassword,
-    changeCurrentPassword} = require('../controllers/auth-controllers');
-const validate=require("../middlewares/validator-middle")
-const {userRegisterValidator,
+    changeCurrentPassword } = require('../controllers/auth-controllers');
+const validate = require("../middlewares/validator-middle")
+const { userRegisterValidator,
     userLoginValidator,
     userChangeCurrentPasswordValidator,
     userForgotPasswordValidator,
-    userResetPasswordValidator}=require("../validators/index")
-const verifyJWT=require('../middlewares/auth.middleware')
+    userResetPasswordValidator } = require("../validators/index")
+const { verifyJWT } = require('../middlewares/auth.middleware')
 
-const router=Router();
+const router = Router();
 
 //unsecured route
 router.route('/register').post(userRegisterValidator(),
-validate, registerUser);
-router.route('/login').post(userLoginValidator(),validate, login);
+    validate, registerUser);
+router.route('/login').post(userLoginValidator(), validate, login);
 router.route('/verify-email/:verificationToken').get(verifyEmail);
 router.route('/refresh-token').post(refreshAccessToken);
-router.route('/forgot-password').post(userForgotPasswordValidator(),validate,forgotPassword);
+router.route('/forgot-password').post(userForgotPasswordValidator(), validate, forgotPassword);
 router.route('/reset-password/:resetToken')
-    .post(userResetPasswordValidator(), resetForgotPassword)
+    .post(userResetPasswordValidator(), validate, resetForgotPassword)
 
 
 //secure route
-router.route('/logout').post(verifyJWT,logoutUser);
-router.route('current-user').post(verifyJWT,getCurrentUser);
-router.route('/change-password').post(verifyJWT,userChangeCurrentPasswordValidator(),validate,changeCurrentPassword);
+router.route('/logout').post(verifyJWT, logoutUser);
+router.route('/current-user').get(verifyJWT, getCurrentUser);
+router.route('/change-password').post(verifyJWT, userChangeCurrentPasswordValidator(), validate, changeCurrentPassword);
 router.route('/resend-email-verification')
-    .post(verifyJWT,resendEmailVerification);
-
-router.route('/')
+    .post(verifyJWT, resendEmailVerification);
 
 //export default router;
-module.exports=router
+module.exports = router

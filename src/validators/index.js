@@ -1,5 +1,5 @@
 const {body}=require("express-validator");
-
+const {AvailableUserRole}=require("../utils/constants")
 const userRegisterValidator=()=>{
     return [
         body("email")
@@ -75,13 +75,41 @@ const userResetPasswordValidator=()=>{
         body('newPassword')
             .notEmpty()
             .withMessage('Password is required')
-
     ]
 }
+
+const createProjectValidator=()=>{
+    return [
+        body("name")
+            .notEmpty()
+            .withMessage("Name is required"),
+        body("description")
+            .optional()
+    ]
+}
+
+const addMembersToProjectValidator=()=>{
+    return [
+        body("email")
+            .trim()
+            .notEmpty()
+            .withMessage("Email is required")
+            .isEmail()
+            .withMessage("Email is invalid"),
+        body("role")
+            .notEmpty()
+            .withMessage("Role is required")
+            .isIn(AvailableUserRole)
+            .withMessage("Role is invalid")
+    ]
+}
+
 module.exports={
     userRegisterValidator,
     userLoginValidator,
     userChangeCurrentPasswordValidator,
     userForgotPasswordValidator,
-    userResetPasswordValidator
+    userResetPasswordValidator,
+    createProjectValidator,
+    addMembersToProjectValidator
 }

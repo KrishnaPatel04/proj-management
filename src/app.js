@@ -19,9 +19,12 @@ app.use(cors({
 //import the routes
 const healthCheckRouter=require('./routes/healtheck-routes')
 const authRouter=require('./routes/auth-routes');
+const projectRouter=require('./routes/project-routes')
 
 app.use("/api/v1/healthcheck",healthCheckRouter);
 app.use("/api/v1/auth",authRouter);
+app.use("/api/v1/projects",projectRouter);
+
 
 
 app.get('/',(req,res)=>{
