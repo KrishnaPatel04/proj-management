@@ -32,8 +32,11 @@ const sendEmail = async (options) => {
     try {
         await transporter.sendMail(mail)
     } catch (error) {
-        console.error("Email sevice failed silently.Make sure that you have provided MAILTRAP credential")
+        console.error("Email service failed. Make sure you have provided valid MAILTRAP credentials")
         console.error(error)
+        // Re-throw so callers (registerUser's rollback, forgotPassword's error
+        // response, etc.) know the send actually failed instead of assuming success.
+        throw error
     }
 }
 

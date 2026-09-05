@@ -56,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
             email: user?.email,
             subject: "Please Verify your email",
             mailgenContent: emailVerificationMailgenContent(user.username,
-                `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unhashed}`),
+                `${process.env.CLIENT_URL}/verify-email/${unhashed}`),
         })
     } catch (error) {
         // Roll back the created user if the verification email fails to send,
@@ -210,7 +210,7 @@ const resendEmailVerification = asyncHandler(async (req, res) => {
             email: user?.email,
             subject: "Please Verify your email",
             mailgenContent: emailVerificationMailgenContent(user.username,
-                `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unhashed}`),
+                `${process.env.CLIENT_URL}/verify-email/${unhashed}`),
         })
     } catch (error) {
         throw new ApiError(500, "Something went wrong while sending the verification email")
@@ -275,12 +275,21 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
     await user.save({ validateBeforeSave: false })
 
-    await sendEmail({
-        email: user?.email,
-        subject: "Password Reset",
-        mailgenContent: forgotPasswordMailgenContent(user.username,
-            `${process.env.FORGOT_PASSWORD_REDIRECT_URL}/${unhashed}`),
-    })
+    try {
+        await sendEmail({
+            email: user?.email,
+            subject: "Password Reset",
+            mailgenContent: forgotPasswordMailgenContent(user.username,
+                `${process.env.CLIENT_URL}/reset-password/${unhashed}`),
+        })
+    } catch (error) {
+        // Don't leave the user thinking a reset link is on its way when it
+        // never sent — clear the token so a retry generates a fresh one.
+        user.forgotPasswordToken = undefined
+        user.forgotPasswordExpiry = undefined
+        await user.save({ validateBeforeSave: false })
+        throw new ApiError(500, "Something went wrong while sending the password reset email")
+    }
     return res
         .status(200)
         .json(

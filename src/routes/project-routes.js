@@ -13,7 +13,7 @@ const {
 } = require('../controllers/project-controllers');
 const validate = require("../middlewares/validator-middle")
 const { createProjectValidator, addMembersToProjectValidator } = require("../validators/index")
-const { verifyJWT, validateProjectPermission } = require('../middlewares/auth.middleware');
+const { verifyJWT, validateProjectPermission } = require('../middlewares/auth-middleware');
 const { AvailableUserRole, UserRolesEnum } = require('../utils/constants');
 
 const router = Router();

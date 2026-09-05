@@ -104,6 +104,15 @@ const addMembersToProjectValidator=()=>{
     ]
 }
 
+const createNoteValidator=()=>{
+    return [
+        body("content")
+            .trim()
+            .notEmpty()
+            .withMessage("Content is required")
+    ]
+}
+
 module.exports={
     userRegisterValidator,
     userLoginValidator,
@@ -111,5 +120,6 @@ module.exports={
     userForgotPasswordValidator,
     userResetPasswordValidator,
     createProjectValidator,
-    addMembersToProjectValidator
+    addMembersToProjectValidator,
+    createNoteValidator
 }

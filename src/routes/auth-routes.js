@@ -16,7 +16,7 @@ const { userRegisterValidator,
     userChangeCurrentPasswordValidator,
     userForgotPasswordValidator,
     userResetPasswordValidator } = require("../validators/index")
-const { verifyJWT } = require('../middlewares/auth.middleware')
+const { verifyJWT } = require('../middlewares/auth-middleware')
 
 const router = Router();
 

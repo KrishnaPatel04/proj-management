@@ -20,14 +20,24 @@ app.use(cors({
 const healthCheckRouter=require('./routes/healtheck-routes')
 const authRouter=require('./routes/auth-routes');
 const projectRouter=require('./routes/project-routes')
+const taskRouter=require('./routes/task-routes')
+const noteRouter=require('./routes/note-routes')
 
 app.use("/api/v1/healthcheck",healthCheckRouter);
 app.use("/api/v1/auth",authRouter);
 app.use("/api/v1/projects",projectRouter);
+app.use("/api/v1/tasks",taskRouter);
+app.use("/api/v1/notes",noteRouter);
 
 
 
 app.get('/',(req,res)=>{
     res.send("Welcome to basecampy")
 })
+
+// must be registered last — Express routes errors here from any
+// asyncHandler-wrapped controller via next(err)
+const errorHandler=require('./middlewares/error-handler')
+app.use(errorHandler)
+
 module.exports=app;
